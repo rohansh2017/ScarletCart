@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scarletcart/frontend/frequent_purchased_card.dart';
-import 'shopper_home_dropdown.dart'; 
-import 'package:scarletcart/frontend/order_tracking.dart'; 
+import 'shopper_home_dropdown.dart'; // dropdown for pickup locations
+import 'package:scarletcart/frontend/order_tracking.dart'; // Import HomePage
 import 'package:scarletcart/frontend/navbar.dart';
+import 'package:scarletcart/frontend/cart_page.dart';
+import 'package:scarletcart/frontend/orders_screen.dart';
+import 'package:scarletcart/frontend/profile.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,6 +16,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   int _selectedIndex = 0;
+  int cartItemCount = 3;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -30,6 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final double scaleFactor =
         (widthScale < heightScale ? widthScale : heightScale);
     String name = "User";
+    int cartItemCount = 3;
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 242, 255, 247),
@@ -48,6 +53,90 @@ class _SplashScreenState extends State<SplashScreen> {
               Navigator.pop(context);
             },
           ),
+          title: Text(
+            'Homepage',
+            style: TextStyle(
+              fontSize: 22 * (scaleFactor),
+              color: const Color.fromARGB(255, 23, 74, 44),
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Outfit',
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.person_outline,
+                color: const Color.fromARGB(255, 23, 74, 44),
+                size: 24 * scaleFactor,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
+              },
+            ),
+
+            IconButton(
+              icon: Icon(
+                Icons.list_alt,
+                color: const Color.fromARGB(255, 23, 74, 44),
+                size: 24 * scaleFactor,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OrdersScreen()),
+                );
+              },
+            ),
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                IconButton(
+                  icon: const Icon(
+                    Icons.shopping_cart_outlined,
+                    color: Color.fromARGB(255, 23, 74, 44),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const ShoppingCartScreen()), // Navigate to Page
+                    );
+                  },
+                  tooltip: 'Shopping cart',
+                ),
+                if (cartItemCount > 0)
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        cartItemCount > 9 ? '9+' : '$cartItemCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
           automaticallyImplyLeading: false,
         ),
       ),
@@ -116,18 +205,24 @@ class _SplashScreenState extends State<SplashScreen> {
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: 'Search a Product or Store',
-                                    hintStyle: TextStyle(fontSize: 16 * scaleFactor), //Responsive hint text
+                                    hintStyle: TextStyle(
+                                        fontSize: 16 *
+                                            scaleFactor), //Responsive hint text
                                   ),
-                                  style: TextStyle(fontSize: 16 * scaleFactor),  //Responsive text
+                                  style: TextStyle(
+                                      fontSize:
+                                          16 * scaleFactor), //Responsive text
                                 ),
                               ),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Padding(
-                                  padding: EdgeInsets.only(right: 8 * scaleFactor),
+                                  padding:
+                                      EdgeInsets.only(right: 8 * scaleFactor),
                                   child: Icon(
                                     Icons.search,
-                                    color: const Color.fromARGB(255, 23, 74, 44),
+                                    color:
+                                        const Color.fromARGB(255, 23, 74, 44),
                                     size: 24 * scaleFactor,
                                   ),
                                 ),
@@ -189,12 +284,16 @@ class _SplashScreenState extends State<SplashScreen> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Distribute cards evenly
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceEvenly, // Distribute cards evenly
                           children: [
-                            const Expanded( // Allow cards to take available space
+                            const Expanded(
+                              // Allow cards to take available space
                               child: FrequentPurchasedCard(),
                             ),
-                            SizedBox(width: 10 * scaleFactor), // Add some spacing between cards
+                            SizedBox(
+                                width: 10 *
+                                    scaleFactor), // Add some spacing between cards
                             const Expanded(
                               child: FrequentPurchasedCard(),
                             ),
@@ -213,55 +312,72 @@ class _SplashScreenState extends State<SplashScreen> {
                             ),
                           ],
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Expanded(
+                              child: FrequentPurchasedCard(),
+                            ),
+                            SizedBox(width: 10 * scaleFactor),
+                            const Expanded(
+                              child: FrequentPurchasedCard(),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 110 * scaleFactor,),
+                SizedBox(
+                  height: 110 * scaleFactor,
+                ),
               ],
             ),
           ),
           // 2. Button area: This part
-          Positioned(
-            bottom: 15 * scaleFactor, // Distance from the bottom
-            left: 0,
-            right: 0, // This makes the container stretch across
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  // Navigate to the HomePage when the "Go to Cart" button is tapped
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CustomerOrderDetailsScreen(orderId: 'orderID_123')),
-                  );
-                },
-                child: Container(
-                  width: 327 * scaleFactor,
-                  height: 43.16 * scaleFactor,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF6CC48E),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Go to Cart',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22 * scaleFactor,
-                        fontFamily: 'Outfit',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 15 * scaleFactor, // Distance from the bottom
+          //   left: 0,
+          //   right: 0, // This makes the container stretch across
+          //   child: Center(
+          //     child: GestureDetector(
+          //       onTap: () {
+          //         // Navigate to the HomePage when the "Go to Cart" button is tapped
+          //         Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //               builder: (context) => const CustomerOrderDetailsScreen(
+          //                   orderId: 'orderID_123')),
+          //         );
+          //       },
+          //       child: Container(
+          //         width: 327 * scaleFactor,
+          //         height: 43.16 * scaleFactor,
+          //         decoration: ShapeDecoration(
+          //           color: const Color(0xFF6CC48E),
+          //           shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.circular(20),
+          //           ),
+          //         ),
+          //         child: Center(
+          //           child: Text(
+          //             'Go to Cart',
+          //             style: TextStyle(
+          //               color: Colors.white,
+          //               fontSize: 22 * scaleFactor,
+          //               fontFamily: 'Outfit',
+          //               fontWeight: FontWeight.w400,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex, onItemTapped: _onItemTapped),
+      // bottomNavigationBar: BottomNavBar(
+      //     selectedIndex: _selectedIndex, onItemTapped: _onItemTapped),
     );
   }
 }

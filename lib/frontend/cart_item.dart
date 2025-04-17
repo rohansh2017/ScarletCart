@@ -13,10 +13,10 @@ class CartItem extends StatefulWidget {
   });
 
   @override
-  CartItemState createState() => CartItemState();
+  _CartItemState createState() => _CartItemState();
 }
 
-class CartItemState extends State<CartItem> {
+class _CartItemState extends State<CartItem> {
   int quantity = 2; // Initial quantity
   final Color mainColor = const Color.fromARGB(255, 108, 196, 142);
 
