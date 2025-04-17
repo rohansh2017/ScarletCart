@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scarletcart/frontend/frequent_purchased_card.dart';
 import 'shopper_home_dropdown.dart'; // dropdown for pickup locations
-import 'package:scarletcart/frontend/order_tracking.dart'; // Import HomePage
-import 'package:scarletcart/frontend/navbar.dart';
 import 'package:scarletcart/frontend/cart_page.dart';
 import 'package:scarletcart/frontend/orders_screen.dart';
 import 'package:scarletcart/frontend/profile.dart';
@@ -15,14 +13,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  int _selectedIndex = 0;
   int cartItemCount = 3;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

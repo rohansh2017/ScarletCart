@@ -200,7 +200,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                     SizedBox(height: 20 * scaleFactor),
                     Text(
-                      'Fresh Lemon', // TODO: Make this dynamic from product data
+                      'Fresh Lemon',
                       style: TextStyle(
                         fontSize: 24 * scaleFactor,
                         fontWeight: FontWeight.bold,
@@ -209,7 +209,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                     SizedBox(height: 8 * scaleFactor),
                     Text(
-                      '\$5.00/KG', // TODO: Make this dynamic
+                      '\$5.00/KG', 
                       style: TextStyle(
                         fontSize: 18 * scaleFactor,
                         color: Colors.teal.shade700, // Theme color
@@ -219,7 +219,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     SizedBox(height: 16 * scaleFactor),
                     Row(
                       children: [
-                        // TODO: Make star rating dynamic
+                       
                         for (int i = 0; i < 5; i++)
                           Icon(
                             i < 4 ? Icons.star : Icons.star_border, // Example dynamic stars
@@ -228,7 +228,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           ),
                         SizedBox(width: 8 * scaleFactor),
                         Text(
-                          '110 Reviews', // TODO: Make this dynamic
+                          '110 Reviews', 
                           style: TextStyle(fontSize: 16 * scaleFactor, color: Colors.grey.shade600),
                         ),
                       ],
@@ -241,18 +241,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         Expanded( // Allow buttons to take space
                           child: ElevatedButton(
                             onPressed: () {
-                              // TODO: Implement Add to Cart logic
+                              
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   backgroundColor: Colors.green,
-                                  content: const Text('Item added to cart!'),
-                                  duration: const Duration(seconds: 2), // Shorter duration
+                                  content: Text('Item added to cart!'),
+                                  // ignore: unnecessary_const
+                                  duration: Duration(seconds: 2), // Shorter duration
                                   // Removed UNDO for simplicity, add back if needed
                                   // action: SnackBarAction(
                                   //   label: 'UNDO',
                                   //   textColor: Colors.yellow,
                                   //   onPressed: () {
-                                  //     // TODO: Perform undo action
+                                  //     
                                   //   },
                                   // ),
                                 ),
@@ -264,8 +265,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                });
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFEBFDF2), // Lighter theme color
-                              foregroundColor: Color(0xFF6CC48E), // Darker theme text
+                              backgroundColor: const Color(0xFFEBFDF2), // Lighter theme color
+                              foregroundColor: const Color(0xFF6CC48E), // Darker theme text
                               padding: EdgeInsets.symmetric(
                                   //horizontal: 32 * scaleFactor, // Use symmetric padding
                                   vertical: 14 * scaleFactor), // Slightly taller
@@ -273,7 +274,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(8 * scaleFactor),
-                                    side: BorderSide(color: Color(0xFF6CC48E)) // Add subtle border
+                                    side: const BorderSide(color: Color(0xFF6CC48E)) // Add subtle border
                               ),
                               elevation: 1,
                             ),
@@ -284,12 +285,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         Expanded( // Allow buttons to take space
                           child: ElevatedButton(
                             onPressed: () {
-                               // TODO: Implement Buy Now logic (e.g., navigate to checkout)
+                               
                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ShoppingCartScreen())); // Example navigation
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF6CC48E), // Main theme color
-                              foregroundColor: Color(0xFFEBFDF2),
+                              backgroundColor: const Color(0xFF6CC48E), // Main theme color
+                              foregroundColor: const Color(0xFFEBFDF2),
                               padding: EdgeInsets.symmetric(
                                   //horizontal: 32 * scaleFactor,
                                   vertical: 14 * scaleFactor),
@@ -317,7 +318,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                     SizedBox(height: 8 * scaleFactor),
                     Text(
-                      // TODO: Make this dynamic
+                      
                       'Lemons are known for their high vitamin C content. Grown organically without pesticides. Perfect for drinks, cooking, and baking.',
                       style: TextStyle(
                         fontSize: 16 * scaleFactor,
@@ -340,7 +341,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                              childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Add padding inside
                              initiallyExpanded: false, // Start closed
                             children: <Widget>[
-                              // TODO: Add actual nutritional info
+                              
                               Text(
                                 'Serving Size: 1 Lemon (approx. 58g)\nCalories: 17\nVitamin C: 30.7mg (51% DV)\n...',
                                 style: TextStyle(fontSize: 15 * scaleFactor, color: Colors.grey.shade700),

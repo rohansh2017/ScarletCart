@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // Ensure these imports point to the correct files in your project
 import 'package:scarletcart/frontend/cart_page.dart';
 import 'package:scarletcart/frontend/orders_screen.dart';
@@ -9,11 +8,9 @@ const Color _pfThemeBackgroundColor = Color(0xFFF0FFF4); // Example: Very light 
 const Color _pfPrimaryTextColor = Color(0xFF004D40); // Example: Dark Teal/Green
 const Color _pfLabelTextColor = Color(0xFF00796B); // Example: Teal
 const Color _pfInputUnderlineColor = Color(0xFF00796B); // Example: Teal
-const Color _pfAppBarLineColor = Color(0xFFB2DFDB); // Example: Light Teal
 
 const Color _pfInactiveButtonColor = Color(0xFFA5D6A7); // Example: Light Green
 const Color _pfActiveButtonColor = Color(0xFF66BB6A); // Example: Green
-const Color _pfButtonTextColor = Colors.white;
 
 // AppBar icon color from previous examples
 const Color _appBarIconColor = Color.fromARGB(255, 23, 74, 44);
@@ -33,9 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isDriverSelected = true;
 
   // --- State variables for profile data ---
-  String _username = '';
-  String _email = '';
-  String _phone = '';
+
   // --- End state variables ---
 
   int cartItemCount = 3; // Example cart count for AppBar badge
@@ -43,12 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // --- Assign placeholder data ---
-    _username = 'Alice Wonderland'; // Example Name
-    _email = 'alice.w@example.com'; // Example Email
-    _phone = '(555) 123-4567'; // Example Phone
-    // TODO: Fetch actual user data here (e.g., from Firebase Auth, API)
-    // TODO: Fetch actual cart count if needed for profile screen badge
+
   }
 
 

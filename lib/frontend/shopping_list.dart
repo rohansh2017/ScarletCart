@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // Ensure these imports point to the correct files in your project structure
 import 'package:scarletcart/frontend/delivered_button.dart'; // Screen for next navigation step
 import 'package:scarletcart/frontend/profile.dart'; // Screen for profile icon navigation
@@ -9,16 +8,12 @@ const Color _themeBackgroundColor = Color(0xFFEBFDF2);
 const Color _primaryTextColor = Colors.black87;
 const Color _secondaryTextColor = Colors.black54;
 const Color _dividerColor = Colors.black12;
-const Color _appBarLineColor = Colors.black; // Keep if used elsewhere
 
 const Color _initialButtonTextColor = Color(0xFF006400);
 const Color _initialButtonBackgroundColor = Colors.white;
 const Color _doneButtonBackgroundColor = Color(0xFF6CC48E);
 const Color _doneButtonTextColor = Colors.white;
 
-const Color _checkboxActiveColor = Color(0xFF6CC48E);
-const Color _checkboxCheckColor = Colors.white;
-const Color _checkboxBorderColor = Colors.black54;
 // --- End color constants ---
 
 // --- Placeholder for Cart Screen Navigation (If needed elsewhere) ---

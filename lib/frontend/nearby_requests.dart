@@ -1,13 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-// Removed unused services import
-// Removed map imports
-
-// Assuming these imports point to valid files in your project structure
-import 'package:scarletcart/frontend/order_details_test.dart'; // Make sure this exists if used
-import 'package:scarletcart/frontend/shopping_list.dart'; // Used in navigation
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scarletcart/frontend/profile.dart';
+import 'package:scarletcart/frontend/shopping_list.dart';
 
-// --- Data Model (Unchanged) ---
 class Request {
   final String id;
   final String storeName;
@@ -16,6 +12,7 @@ class Request {
   final String profit;
   final IconData icon;
   final Color iconColor;
+  final LatLng baseLocation; // 👈 new
 
   Request({
     required this.id,
@@ -23,8 +20,9 @@ class Request {
     required this.deliveryLocation,
     required this.distance,
     required this.profit,
-    this.icon = Icons.shopping_bag_outlined, // Default icon
-    this.iconColor = Colors.green, // Default color
+    required this.baseLocation,
+    this.icon = Icons.shopping_bag_outlined,
+    this.iconColor = Colors.green,
   });
 }
 
@@ -32,24 +30,42 @@ class Request {
 // You might want to add unique IDs if they matter later
 final Request recommendedRequest = Request(
   id: 'rec_1',
-  storeName: "Shop Rite (Recommended)", // Example differentiation
+  storeName: "Shop Rite (Recommended)",
   deliveryLocation: "Deliver: Busch Student Center",
-  distance: "Distance: 1.5 mi", // Example differentiation
-  profit: "Profit: \$15",      // Example differentiation
-  iconColor: Colors.orange.shade700, // Example differentiation
+  distance: "Distance: 1.5 mi",
+  profit: "Profit: \$15",
+  iconColor: Colors.orange.shade700,
+  baseLocation: const LatLng(40.5230, -74.4580), // 👈 Add a real location here
 );
 
-final List<Request> sampleRequests = List.generate(
-  7,
-  (index) => Request(
-    id: 'nearby_$index',
-    storeName: "Shop Rite #$index", // Make names slightly different
+final List<Request> sampleRequests = [
+  Request(
+    id: 'nearby_1',
+    storeName: "Stop & Shop – New Brunswick",
     deliveryLocation: "Deliver: Busch Student Center",
-    distance: "Distance: ${2.1 + (index * 0.2).round()} mi", // Vary distance slightly
-    profit: "Profit: \$${12 + index}", // Vary profit
+    distance: "1.2 mi",
+    profit: "\$13",
+    baseLocation: const LatLng(40.512051, -74.486452),
   ),
-  growable: false,
-);
+  Request(
+    id: 'nearby_2',
+    storeName: "ALDI – Piscataway",
+    deliveryLocation: "Deliver: Busch Student Center",
+    distance: "1.8 mi",
+    profit: "\$15",
+    baseLocation: const LatLng(40.552144, -74.439081),
+  ),
+  Request(
+    id: 'nearby_3',
+    storeName: "Kilmer's Market",
+    deliveryLocation: "Deliver: Busch Student Center",
+    distance: "2.3 mi",
+    profit: "\$14",
+    baseLocation: const LatLng(40.525745, -74.438538),
+  )
+];
+
+
 // --- End Sample Data ---
 
 // --- Main App Widget ---
@@ -67,25 +83,25 @@ class NearbyReqScreen extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true, // Enable Material 3 features
         colorScheme: ColorScheme.fromSeed(
-             seedColor: Colors.green, // Base color for the theme
-             background: Colors.white, // Explicit background color
-             surface: Colors.white,    // Default color for cards, sheets etc.
-             // You can define more colors like primary, secondary, error etc.
+          seedColor: Colors.green, // Base color for the theme.
+          surface: Colors.white, // Default color for cards, sheets etc.
+          // You can define more colors like primary, secondary, error etc.
         ),
         appBarTheme: const AppBarTheme(
-           backgroundColor: Color(0xFFDCF5E6), // Light green AppBar background
-           foregroundColor: Colors.black, // Color for icons and title text
-           elevation: 0, // No shadow
-           titleTextStyle: TextStyle( // Style for the AppBar title
-             color: Colors.black,
-             fontSize: 18,
-             fontWeight: FontWeight.bold,
-             fontFamily: 'YourAppFont', // Optional: Specify your app's font
-           ),
-           iconTheme: IconThemeData(
-             color: Colors.black54 // Default color for AppBar icons (like back arrow)
-           )
-        ),
+            backgroundColor: Color(0xFFDCF5E6), // Light green AppBar background
+            foregroundColor: Colors.black, // Color for icons and title text
+            elevation: 0, // No shadow
+            titleTextStyle: TextStyle(
+              // Style for the AppBar title
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'YourAppFont', // Optional: Specify your app's font
+            ),
+            iconTheme: IconThemeData(
+                color: Colors
+                    .black54 // Default color for AppBar icons (like back arrow)
+                )),
         // Define other theme properties like textTheme, cardTheme if needed
       ),
       home: const OrderConfirmationScreen(), // Start with this screen
@@ -94,93 +110,116 @@ class NearbyReqScreen extends StatelessWidget {
 }
 // --- End Main App Widget ---
 
-
 // --- Screen Widget ---
 class OrderConfirmationScreen extends StatefulWidget {
   const OrderConfirmationScreen({super.key});
 
   @override
-  State<OrderConfirmationScreen> createState() => _OrderConfirmationScreenState();
+  State<OrderConfirmationScreen> createState() =>
+      _OrderConfirmationScreenState();
 }
 
 class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
+  final Completer<GoogleMapController> _mapController = Completer();
+  
+  late List<Marker> _markers;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _markers = [
+      Marker(
+        markerId: MarkerId(recommendedRequest.id),
+        position: recommendedRequest.baseLocation,
+        infoWindow: InfoWindow(
+          title: recommendedRequest.storeName,
+          snippet: recommendedRequest.profit,
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      ),
+      ...sampleRequests.map((request) {
+        return Marker(
+          markerId: MarkerId(request.id),
+          position: request.baseLocation,
+          infoWindow: InfoWindow(
+            title: request.storeName,
+            snippet: request.profit,
+          ),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        );
+      }),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Get theme colors
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final Color sheetBackgroundColor = colorScheme.surface; // White in this theme
+    final Color sheetBackgroundColor = colorScheme.surface;
     final Color dragHandleColor = Colors.grey[300] ?? Colors.grey;
 
     return Scaffold(
       appBar: AppBar(
-         // Use theme's foregroundColor for the back button by default
-         leading: Navigator.canPop(context) ? IconButton(
-           icon: const Icon(Icons.arrow_back),
-           tooltip: MaterialLocalizations.of(context).backButtonTooltip, // Standard tooltip
-           onPressed: () => Navigator.pop(context),
-         ) : null, // Only show back button if possible to pop
-         title: const Text("Requests"), // Uses AppBarTheme titleTextStyle
-         centerTitle: false, // Align title to the left (standard)
-         titleSpacing: Navigator.canPop(context) ? 0 : NavigationToolbar.kMiddleSpacing, // Adjust spacing based on leading widget presence
-
-         // **** ADDED PROFILE ICON ACTION ****
-         actions: <Widget>[
-           IconButton(
-             icon: const Icon(
-               Icons.person_outline, // Or Icons.person_outline
-               // color: Colors.black87, // Can override AppBarTheme foregroundColor if needed
-               size: 28, // Optional: Adjust size
-             ),
-             tooltip: 'Profile', // Accessibility tooltip
-             onPressed: () {
-               // Action to perform when profile icon is tapped
-               print('Profile icon tapped!');
-               // Example: Navigate to a Profile Screen
-               // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()));
-               
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                );             
-             },
-           ),
-           const SizedBox(width: 8), // Add slight padding after the icon
-         ],
-         // **** END PROFILE ICON ACTION ****
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                onPressed: () => Navigator.pop(context),
+              )
+            : null,
+        title: const Text("Requests"),
+        centerTitle: false,
+        titleSpacing:
+            Navigator.canPop(context) ? 0 : NavigationToolbar.kMiddleSpacing,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.person_outline, size: 28),
+            tooltip: 'Profile',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
-      body: Stack( // Use Stack to layer the map and the sheet
+      body: Stack(
         children: [
-          // --- Placeholder Map Background ---
-          Positioned.fill( // Fill the entire stack space
-            child: Image.asset(
-              'assets/google_map.webp', // Ensure this path is correct and asset is listed in pubspec.yaml
-              fit: BoxFit.cover, // Cover the area, might crop
-              // Provide an error widget in case the image fails to load
-              errorBuilder: (context, error, stackTrace) {
-                print("Error loading map image: $error"); // Log error
-                return Container(
-                  color: Colors.grey[200], // Placeholder color
-                  child: const Center(
-                      child: Icon(Icons.map_outlined, color: Colors.grey, size: 50)),
-                );
+          // ✅ Google Map
+          Positioned.fill(
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: recommendedRequest.baseLocation,
+                zoom: 13.5,
+              ),
+              markers: Set<Marker>.of(_markers),
+              onMapCreated: (controller) {
+                if (!_mapController.isCompleted) {
+                  _mapController.complete(controller);
+                }
               },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
             ),
           ),
-          // --- End Placeholder Map Background ---
-
           // --- Draggable Sheet ---
           DraggableScrollableSheet(
-            initialChildSize: 0.28, // Start height (percentage of available space)
-            minChildSize: 0.28,   // Minimum height it can be dragged down to
-            maxChildSize: 0.85,   // Maximum height it can be dragged up to
+            initialChildSize:
+                0.28, // Start height (percentage of available space)
+            minChildSize: 0.28, // Minimum height it can be dragged down to
+            maxChildSize: 0.85, // Maximum height it can be dragged up to
             builder: (BuildContext context, ScrollController scrollController) {
               // This builder returns the scrollable content of the sheet
               return Container(
                 decoration: BoxDecoration(
                   color: sheetBackgroundColor,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)), // Rounded top corners
-                  boxShadow: [ // Soft shadow for visual separation
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20)), // Rounded top corners
+                  boxShadow: [
+                    // Soft shadow for visual separation
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),
                       blurRadius: 8,
@@ -189,23 +228,27 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   ],
                 ),
                 // Use a ListView for the sheet content for easy scrolling of mixed items
-                child: ListView( // Changed from Column + Expanded(ListView) for simplicity here
-                  controller: scrollController, // *** Attach the controller to the scrollable view ***
+                child: ListView(
+                  // Changed from Column + Expanded(ListView) for simplicity here
+                  controller:
+                      scrollController, // *** Attach the controller to the scrollable view ***
                   padding: EdgeInsets.only(
-                     left: 15.0,
-                     right: 15.0,
-                     top: 5.0, // Padding above the drag handle
-                     // Add bottom padding to avoid system navigation bars
-                     bottom: MediaQuery.of(context).padding.bottom + 20,
+                    left: 15.0,
+                    right: 15.0,
+                    top: 5.0, // Padding above the drag handle
+                    // Add bottom padding to avoid system navigation bars
+                    bottom: MediaQuery.of(context).padding.bottom + 20,
                   ),
                   children: [
                     // Drag Handle indicator
-                    Align( // Center the handle
+                    Align(
+                      // Center the handle
                       alignment: Alignment.center,
                       child: Container(
                         width: 40,
                         height: 5,
-                        margin: const EdgeInsets.symmetric(vertical: 8.0), // Space around handle
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8.0), // Space around handle
                         decoration: BoxDecoration(
                           color: dragHandleColor,
                           borderRadius: BorderRadius.circular(10),
@@ -224,36 +267,36 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     // const Divider(height: 20, thickness: 1),
                     // --- End Recommended Request Section ---
 
-
                     // Nearby Requests Title
                     const Padding(
-                      padding: EdgeInsets.only(bottom: 5.0, top: 10.0), // Adjust spacing
+                      padding: EdgeInsets.only(
+                          bottom: 5.0, top: 10.0), // Adjust spacing
                       child: Text(
                         "Nearby Requests",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
 
                     // --- Nearby Requests List ---
                     // Generate list items using map and spread operator (...)
                     ...sampleRequests.map((request) => GestureDetector(
-                          onTap: () {
-                            print("Tapped on Nearby Request: ${request.id}");
-                            // Navigate to the Shopping List screen when a request is tapped
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                // Using ShoppingLI wrapper which contains ShoppingListScreen
-                                builder: (context) => const ShoppingLI(),
-                                // Consider passing request details if ShoppingLI/ShoppingListScreen needs them:
-                                // builder: (context) => ShoppingLI(requestDetails: request),
-                              ),
-                            );
-                          },
-                          // Use the reusable widget for each row
-                          child: _RequestRowWidget(request: request),
-                        ) // End GestureDetector
-                    ).toList(), // Convert the Iterable from map to a List<Widget>
+                              onTap: () {
+                                // Navigate to the Shopping List screen when a request is tapped
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    // Using ShoppingLI wrapper which contains ShoppingListScreen
+                                    builder: (context) => const ShoppingLI(),
+                                    // Consider passing request details if ShoppingLI/ShoppingListScreen needs them:
+                                    // builder: (context) => ShoppingLI(requestDetails: request),
+                                  ),
+                                );
+                              },
+                              // Use the reusable widget for each row
+                              child: _RequestRowWidget(request: request),
+                            ) // End GestureDetector
+                        ), // Convert the Iterable from map to a List<Widget>
                     // --- End Nearby Requests List ---
 
                     // Bottom padding is handled by ListView's padding property above
@@ -268,7 +311,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
     ); // End Scaffold
   }
 } // End of _OrderConfirmationScreenState
-
 
 // --- Reusable Widget for Displaying a Single Request Row (Unchanged) ---
 class _RequestRowWidget extends StatelessWidget {
@@ -303,7 +345,8 @@ class _RequestRowWidget extends StatelessWidget {
                 // Store Name (Bold title)
                 Text(
                   request.storeName,
-                  style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold), // Use theme style
+                  style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold), // Use theme style
                   maxLines: 1, // Prevent wrapping
                   overflow: TextOverflow.ellipsis, // Indicate overflow with ...
                 ),
@@ -311,7 +354,9 @@ class _RequestRowWidget extends StatelessWidget {
                 // Delivery Location (Smaller text)
                 Text(
                   request.deliveryLocation,
-                  style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant), // Use theme style (often slightly muted)
+                  style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme
+                          .onSurfaceVariant), // Use theme style (often slightly muted)
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -319,13 +364,16 @@ class _RequestRowWidget extends StatelessWidget {
                 // Distance
                 Text(
                   request.distance,
-                   style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant), // Even smaller text
+                  style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant), // Even smaller text
                 ),
                 const SizedBox(height: 3), // Space
                 // Profit (Slightly bolder small text)
                 Text(
                   request.profit,
-                  style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600), // Make profit stand out a bit
+                  style: textTheme.bodyMedium?.copyWith(
+                      fontWeight:
+                          FontWeight.w600), // Make profit stand out a bit
                 ),
               ],
             ),
