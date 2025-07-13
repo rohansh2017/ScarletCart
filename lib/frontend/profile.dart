@@ -56,9 +56,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final double scaleFactor =
         widthScale < heightScale ? widthScale : heightScale;
 
-    String name = "John";
-    String email = "John@gmail.com";
-    String number = "1234561234";
+    String name = "Rohan";
+    String email = "rs2273@scarletmail.rutgers.edu";
+    String number = "(***)-***-5093";
     // --- End Scaling ---
 
     return Scaffold(

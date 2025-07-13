@@ -65,7 +65,6 @@ final List<Request> sampleRequests = [
   )
 ];
 
-
 // --- End Sample Data ---
 
 // --- Main App Widget ---
@@ -81,30 +80,24 @@ class NearbyReqScreen extends StatelessWidget {
       title: 'Order Requests',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        useMaterial3: true, // Enable Material 3 features
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green, // Base color for the theme.
-          surface: Colors.white, // Default color for cards, sheets etc.
-          // You can define more colors like primary, secondary, error etc.
+          seedColor: Colors.green,
+          surface: Colors.white,
         ),
         appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFFDCF5E6), // Light green AppBar background
-            foregroundColor: Colors.black, // Color for icons and title text
-            elevation: 0, // No shadow
+            backgroundColor: Color(0xFFDCF5E6),
+            foregroundColor: Colors.black,
+            elevation: 0,
             titleTextStyle: TextStyle(
-              // Style for the AppBar title
               color: Colors.black,
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              fontFamily: 'YourAppFont', // Optional: Specify your app's font
+              fontFamily: 'YourAppFont',
             ),
-            iconTheme: IconThemeData(
-                color: Colors
-                    .black54 // Default color for AppBar icons (like back arrow)
-                )),
-        // Define other theme properties like textTheme, cardTheme if needed
+            iconTheme: IconThemeData(color: Colors.black54)),
       ),
-      home: const OrderConfirmationScreen(), // Start with this screen
+      home: const OrderConfirmationScreen(),
     );
   }
 }
@@ -121,7 +114,7 @@ class OrderConfirmationScreen extends StatefulWidget {
 
 class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
   final Completer<GoogleMapController> _mapController = Completer();
-  
+
   late List<Marker> _markers;
 
   @override

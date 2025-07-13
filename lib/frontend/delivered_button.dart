@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scarletcart/frontend/driver_confirmation.dart';
 import 'package:scarletcart/frontend/profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // --- Keep your color constants ---
 const Color _dpThemeBackgroundColor = Color(0xFFF0FFF4);
@@ -116,7 +117,7 @@ class DeliverProgressScreen extends StatelessWidget {
               color: Color.fromARGB(255, 23, 74, 44), // Use defined color
               size: 24.0, // Fixed size (removed scaleFactor)
             ),
-             tooltip: 'Profile', // Added tooltip
+            tooltip: 'Profile', // Added tooltip
             onPressed: () {
               Navigator.push(
                 context,
@@ -145,15 +146,42 @@ class DeliverProgressScreen extends StatelessWidget {
             ),
             const SizedBox(height: 25.0),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context, // The context from where you are navigating
-                  MaterialPageRoute(
-                    // Use the correct screen name here
-                    builder: (context) => const Confirmation(),
-                  ),
-                );
-                print('Delivered? button tapped');
+              onPressed: () async {
+                try {
+                  // Assuming you have the order document ID
+                  String orderId =
+                      'orderID_123'; // Replace with your actual order ID variable
+
+                  // Update the Firestore document
+                  await FirebaseFirestore.instance
+                      .collection('orders')
+                      .doc(orderId)
+                      .update({
+                    'status': 'Delivered',
+                    'deliveryCompletedTimestamp': FieldValue
+                        .serverTimestamp(), // Optional: track delivery time
+                    'driverComfirmed': true,
+                  });
+
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Order marked as delivered!')),
+                  );
+
+                  // Then navigate to confirmation screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Confirmation(),
+                    ),
+                  );
+                } catch (error) {
+                  // Handle any errors
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error updating order: $error')),
+                  );
+                  print('Error updating order: $error');
+                }
               },
               child: const Text('Delivered?'),
             ),

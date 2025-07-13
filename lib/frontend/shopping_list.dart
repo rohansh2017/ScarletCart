@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-// Ensure these imports point to the correct files in your project structure
-import 'package:scarletcart/frontend/delivered_button.dart'; // Screen for next navigation step
-import 'package:scarletcart/frontend/profile.dart'; // Screen for profile icon navigation
+import 'package:scarletcart/frontend/confirmation.dart';
+import 'package:scarletcart/frontend/profile.dart';
 
-// --- Keep your color constants ---
 const Color _themeBackgroundColor = Color(0xFFEBFDF2);
 const Color _primaryTextColor = Colors.black87;
 const Color _secondaryTextColor = Colors.black54;
@@ -14,26 +12,18 @@ const Color _initialButtonBackgroundColor = Colors.white;
 const Color _doneButtonBackgroundColor = Color(0xFF6CC48E);
 const Color _doneButtonTextColor = Colors.white;
 
-// --- End color constants ---
-
-// --- Placeholder for Cart Screen Navigation (If needed elsewhere) ---
 class ShoppingCartScreen extends StatelessWidget {
- const ShoppingCartScreen({super.key});
+  const ShoppingCartScreen({super.key});
 
- @override
- Widget build(BuildContext context) {
-   return Scaffold(
-     appBar: AppBar(title: const Text("Shopping Cart")),
-     body: const Center(child: Text("Your Shopping Cart Items Here")),
-   );
- }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Shopping Cart")),
+      body: const Center(child: Text("Your Shopping Cart Items Here")),
+    );
+  }
 }
-// --- End Placeholder ---
 
-
-// --- Wrapper Widget (No MaterialApp) ---
-// This widget assumes it's being used within a larger app that already has a MaterialApp.
-// It directly returns the screen.
 class ShoppingLI extends StatelessWidget {
   const ShoppingLI({super.key});
 
@@ -45,7 +35,6 @@ class ShoppingLI extends StatelessWidget {
   }
 }
 // --- End Wrapper Widget ---
-
 
 // --- Data Model for Shopping Items ---
 class ShoppingItem {
@@ -67,7 +56,6 @@ class ShoppingItem {
 }
 // --- End Data Model ---
 
-
 // --- Main Shopping List Screen Widget ---
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({super.key});
@@ -86,7 +74,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   // The list of shopping items
   final List<ShoppingItem> _shoppingItems = List.generate(
-    8, // Generate 8 sample items
+    3, // Generate 8 sample items
     (index) => ShoppingItem(
       id: 'item_$index',
       name: 'Diet Coke #${index + 1}',
@@ -110,7 +98,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     // Check if the list is not empty AND every item's isChecked property is true
     // Use setState to trigger a UI rebuild if the state changes
     setState(() {
-      _isShoppingComplete = _shoppingItems.isNotEmpty && _shoppingItems.every((item) => item.isChecked);
+      _isShoppingComplete = _shoppingItems.isNotEmpty &&
+          _shoppingItems.every((item) => item.isChecked);
     });
     // Note: .every() returns true for an empty list, hence the `isNotEmpty` check.
   }
@@ -124,54 +113,54 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       // Use the theme's background color or the constant
       backgroundColor: _themeBackgroundColor,
       appBar: AppBar(
-         backgroundColor: const Color.fromARGB(255, 235, 253, 242), // Specific light green
-         elevation: 0, // No shadow
-         // Back button - only works if this screen was pushed onto a navigator
-         leading: IconButton(
-           icon: const Icon(
-             Icons.arrow_back,
-             color: Color.fromARGB(255, 23, 74, 44), // Dark green icon
-           ),
-           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-           onPressed: () {
-             // Attempt to pop the current route off the navigator stack
-             if (Navigator.canPop(context)) {
-               Navigator.pop(context);
-             }
-           },
-         ),
-         // Title in the AppBar
-         title: const Text(
-           'Shopping List', // Changed title for clarity
-           style: TextStyle(
-             color: Color.fromARGB(255, 23, 74, 44), // Dark green text
-             fontWeight: FontWeight.w600,
-             fontFamily: 'Outfit', // Example custom font
-             fontSize: 22,
-           ),
-         ),
-         centerTitle: true, // Center the title
-         // Actions on the right side of the AppBar
-         actions: <Widget>[
-           IconButton(
-             icon: const Icon(
-               Icons.person_outline, // Profile Icon
-               size: 28,
-               color: Color.fromARGB(255, 23, 74, 44), // Match other icons
-             ),
-             tooltip: 'Profile',
-             onPressed: () {
-               print('Profile icon tapped!');
-               // Navigate to the Profile Screen
-               Navigator.push(
-                 context,
-                 MaterialPageRoute(builder: (context) => const ProfileScreen()),
-               );
-             },
-           ),
-           const SizedBox(width: 8), // Padding before edge
-         ],
-       ),
+        backgroundColor:
+            const Color.fromARGB(255, 235, 253, 242), // Specific light green
+        elevation: 0, // No shadow
+        // Back button - only works if this screen was pushed onto a navigator
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 23, 74, 44), // Dark green icon
+          ),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onPressed: () {
+            // Attempt to pop the current route off the navigator stack
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+          },
+        ),
+        // Title in the AppBar
+        title: const Text(
+          'Shopping List', // Changed title for clarity
+          style: TextStyle(
+            color: Color.fromARGB(255, 23, 74, 44), // Dark green text
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Outfit', // Example custom font
+            fontSize: 22,
+          ),
+        ),
+        centerTitle: true, // Center the title
+        // Actions on the right side of the AppBar
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.person_outline, // Profile Icon
+              size: 28,
+              color: Color.fromARGB(255, 23, 74, 44), // Match other icons
+            ),
+            tooltip: 'Profile',
+            onPressed: () {
+              // Navigate to the Profile Screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+          ),
+          const SizedBox(width: 8), // Padding before edge
+        ],
+      ),
       // Body using CustomScrollView for mixing slivers (list, button area)
       body: CustomScrollView(
         slivers: [
@@ -206,12 +195,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       ),
                     );
                   } else {
-                    return const SizedBox.shrink(); // No divider after the last item
+                    return const SizedBox
+                        .shrink(); // No divider after the last item
                   }
                 }
               },
               // Calculate the total number of children: items + dividers between them
-              childCount: _shoppingItems.isEmpty ? 0 : (_shoppingItems.length * 2 - 1),
+              childCount:
+                  _shoppingItems.isEmpty ? 0 : (_shoppingItems.length * 2 - 1),
             ),
           ),
           // Area at the bottom that stays visible, containing the button
@@ -228,7 +219,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   // --- Helper Method to Build a Single Item Tile ---
-  Widget _buildShoppingItemTile(BuildContext context, ShoppingItem item, int index) {
+  Widget _buildShoppingItemTile(
+      BuildContext context, ShoppingItem item, int index) {
     // Define labels for clarity
     const String volumeLabel = 'Volume: ';
     const String quantityLabel = 'Quantity: ';
@@ -238,7 +230,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       // Padding around the row
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center, // Vertically center items
+        crossAxisAlignment:
+            CrossAxisAlignment.center, // Vertically center items
         children: [
           // Expanded section for text details (takes up available space)
           Expanded(
@@ -256,12 +249,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 const SizedBox(height: 4.0), // Spacing
                 Text(
                   '$volumeLabel${item.volume}',
-                  style: const TextStyle(fontSize: 13, color: _secondaryTextColor),
+                  style:
+                      const TextStyle(fontSize: 13, color: _secondaryTextColor),
                 ),
                 const SizedBox(height: 2.0),
                 Text(
                   '$quantityLabel${item.quantity}',
-                  style: const TextStyle(fontSize: 13, color: _secondaryTextColor),
+                  style:
+                      const TextStyle(fontSize: 13, color: _secondaryTextColor),
                 ),
               ],
             ),
@@ -308,72 +303,78 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     // Use theme's ElevatedButton style as a base
     final buttonStyle = theme.elevatedButtonTheme.style;
 
-     return Container(
-        // Padding around the button container
-        padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0),
-        child: SafeArea( // Ensures button isn't obscured by system UI (like home bar)
-          top: false, // Only apply safe area padding to the bottom
-          child: Padding(
-             padding: const EdgeInsets.only(bottom: 12.0), // Extra space below button
-             child: SizedBox(
-               width: double.infinity, // Make button stretch full width
-               child: ElevatedButton(
-                 // --- Dynamic Button Styling ---
-                 style: ElevatedButton.styleFrom(
-                   // Background color depends on completion state
-                   backgroundColor: _isShoppingComplete
-                       ? _doneButtonBackgroundColor // Green when done
-                       : _initialButtonBackgroundColor, // White when in progress
-                   // Text/Icon color depends on completion state
-                   foregroundColor: _isShoppingComplete
-                       ? _doneButtonTextColor // White text when done
-                       : _initialButtonTextColor, // Dark green text when in progress
-                   // Adjust elevation or other properties based on state (optional)
-                   elevation: _isShoppingComplete ? 2 : 1, // Slightly more shadow when active
-                   // Define padding and shape (can also be part of main theme)
-                   padding: const EdgeInsets.symmetric(vertical: 14.0),
-                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0), // Rounded corners
-                   ),
-                 ).merge(buttonStyle), // Merge with the base theme style
+    return Container(
+      // Padding around the button container
+      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0),
+      child: SafeArea(
+        // Ensures button isn't obscured by system UI (like home bar)
+        top: false, // Only apply safe area padding to the bottom
+        child: Padding(
+          padding:
+              const EdgeInsets.only(bottom: 12.0), // Extra space below button
+          child: SizedBox(
+            width: double.infinity, // Make button stretch full width
+            child: ElevatedButton(
+              // --- Dynamic Button Styling ---
+              style: ElevatedButton.styleFrom(
+                // Background color depends on completion state
+                backgroundColor: _isShoppingComplete
+                    ? _doneButtonBackgroundColor // Green when done
+                    : _initialButtonBackgroundColor, // White when in progress
+                // Text/Icon color depends on completion state
+                foregroundColor: _isShoppingComplete
+                    ? _doneButtonTextColor // White text when done
+                    : _initialButtonTextColor, // Dark green text when in progress
+                // Adjust elevation or other properties based on state (optional)
+                elevation: _isShoppingComplete
+                    ? 2
+                    : 1, // Slightly more shadow when active
+                // Define padding and shape (can also be part of main theme)
+                padding: const EdgeInsets.symmetric(vertical: 14.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0), // Rounded corners
+                ),
+              ).merge(buttonStyle), // Merge with the base theme style
 
-                 // --- Conditional Navigation Logic ---
-                 onPressed: () {
-                   // ACTION: Only proceed if shopping is complete
-                   if (_isShoppingComplete) {
-                     print('Proceed button tapped - Navigating');
-                     // Navigate to the next screen (Delivery Progress)
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(
-                         builder: (context) => const DeliverProgressScreen(),
-                       ),
-                     );
-                   } else {
-                     // ACTION: Show feedback if tapped prematurely
-                     print('Proceed button tapped - Shopping not complete');
-                     ScaffoldMessenger.of(context).showSnackBar(
-                       const SnackBar(
-                         content: Text('Please check off all items first.'),
-                         duration: Duration(seconds: 2),
-                         behavior: SnackBarBehavior.floating, // Optional: Make it float
-                       ),
-                     );
-                   }
-                 },
-                 // --- Dynamic Button Text ---
-                 child: Text(
-                   _isShoppingComplete ? 'Proceed to Delivery' : 'Shopping in Progress',
-                   style: const TextStyle(
-                     fontSize: 16,
-                     fontWeight: FontWeight.w600,
-                     // Font family will be inherited from theme or default
-                   ),
-                 ),
-               ),
-             ),
+              // --- Conditional Navigation Logic ---
+              onPressed: () {
+                // ACTION: Only proceed if shopping is complete
+                if (_isShoppingComplete) {
+                  print('Proceed button tapped - Navigating');
+                  // Navigate to the next screen (Delivery Progress)
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrderTracking(),
+                    ),
+                  );
+                } else {
+                  // ACTION: Show feedback if tapped prematurely
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please check off all items first.'),
+                      duration: Duration(seconds: 2),
+                      behavior:
+                          SnackBarBehavior.floating, // Optional: Make it float
+                    ),
+                  );
+                }
+              },
+              // --- Dynamic Button Text ---
+              child: Text(
+                _isShoppingComplete
+                    ? 'Proceed to Delivery'
+                    : 'Shopping in Progress',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  // Font family will be inherited from theme or default
+                ),
+              ),
+            ),
           ),
         ),
-     );
+      ),
+    );
   }
 } // End of _ShoppingListScreenState class

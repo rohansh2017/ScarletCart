@@ -92,10 +92,6 @@ class _OrderTrackingState extends State<OrderTracking> {
             // Navigator.canPop(context) should now be true
             if (Navigator.canPop(context)) {
               Navigator.pop(context);
-            } else {
-              // Optional: Handle case where it *still* can't pop
-              // (e.g., if this was the very first screen of the app)
-              print("Cannot pop further back!");
             }
           },
         ),
@@ -248,11 +244,8 @@ class _OrderTrackingState extends State<OrderTracking> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {
-                                print("Delivered button tapped!");
-                                setState(() {
-                                  _isDelivered = true;
-                                }); // Mark as delivered locally
+                              onTap: () async {
+                            
 
                                 Navigator.push(
                                   // Navigate to confirmation

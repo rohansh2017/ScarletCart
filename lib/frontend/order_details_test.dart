@@ -15,7 +15,7 @@ Future<void> updateOrderStatus(String orderId, String newStatus) async {
 Future<void> markOrderAsDelivered(String orderId) async {
   try {
     await FirebaseFirestore.instance.collection('orders').doc(orderId).update({
-      'status': 'Delivered',  // Changed from 'Completed' to 'Delivered'
+      'status': 'Delivered', 
       'driverConfirmed': true,
       'deliveryCompletedTimestamp': FieldValue.serverTimestamp(),
     });
