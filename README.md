@@ -1,33 +1,59 @@
-# ScarletCart 🛒🔴  
-🚀 *Your Campus Grocery Buddy – Smart, Fast, and Community-Driven!*  
+# ScarletCart
 
-## 📌 Overview  
-**ScarletCart** is a **community-powered grocery assistance app** designed for Rutgers students. It allows students to **request grocery items** while **other students (shoppers) can pick them up and deliver them** to designated locations like **student center lockers or residence halls**.  
+A student-to-student grocery delivery app for Rutgers. A student who is already going to the store picks up items for students who are not, and gets paid once both sides confirm the handoff. Think carpooling, but for groceries.
 
-This app makes grocery shopping:  
-✅ **Convenient** – Get groceries delivered without leaving campus.  
-✅ **Affordable** – Lower delivery costs compared to Instacart.  
-✅ **Community-Powered** – Students help students while earning incentives.
+Built in the RUMAD (Rutgers Mobile App Development) incubator, Spring 2025, by a team of five.
 
-## 📱 Features  
+<!-- TODO: add 2 or 3 phone screenshots here (home, nearby requests map, order confirmation) -->
 
-### 🔹 Feature 1: Trust System & Secure Payment  
-- Two-step confirmation:  
-  1. Shopper marks order as **"Delivered"**  
-  2. Requester marks order as **"Received"**, releasing payment.  
-- Payments are **held securely** until both parties confirm.  
-- Tracks **transaction history** to flag repeat offenders.  
-- Displays **pending payments, completed transactions, and user rewards.**  
+## What it does
 
-### 🔹 Feature 2: Location-Based Order Matching  
-- Uses **Google Maps API** to show **nearby active grocery requests**.  
-- Shoppers receive **alerts when near a store with requests**.  
-- Displays **available shoppers, nearby stores, and active orders in real-time.**
+- **Two roles in one app.** A requester builds a shopping list and places an order; a shopper sees open orders and accepts one.
+- **Nearby requests on a map.** Shoppers see active requests around them on Google Maps.
+- **Two-step confirmation.** The shopper marks an order delivered, then the requester marks it received. Payment is tied to the second confirmation, so neither side has to trust the other blindly.
+- **Order tracking.** Each order moves through its states in Firestore, and both sides see updates as they happen.
+- **Sign-in with Google**, through Firebase Authentication.
 
-## 🛠️ Tech Stack  
-- **Frontend:** Flutter (Dart) with Google Maps and Firebase Auth integration
-- **Backend:** Firebase (Authentication, Google Cloud APIs for Maps)  
+## Stack
 
-📐 **UI/UX Tools Used:**  
-- **Figma** – Wireframing & design.  
-- **FigJam / Google Jamboard** – Brainstorming & collaboration.  
+| Layer | Tools |
+|---|---|
+| App | Flutter, Dart |
+| Auth | Firebase Authentication, Google Sign-In |
+| Data | Cloud Firestore |
+| Notifications | Firebase Cloud Messaging |
+| Payments | Stripe (`flutter_stripe`) |
+| Maps | Google Maps (`google_maps_flutter`) |
+
+## Project layout
+
+| Path | What it is |
+|---|---|
+| `lib/main.dart` | App entry point and Firebase setup |
+| `lib/frontend/` | Screens and widgets: home, cart, shopping list, shopper view, nearby requests, order tracking, confirmation |
+| `lib/backend/` | Firebase options and the Stripe payment service |
+
+## Run it
+
+You need the [Flutter SDK](https://docs.flutter.dev/get-started/install) and your own Firebase project.
+
+```bash
+git clone https://github.com/rohansh2017/ScarletCart.git
+cd ScarletCart
+flutter pub get
+flutter run
+```
+
+Before it will work end to end:
+
+1. Point the app at your Firebase project with `flutterfire configure`, and enable Google sign-in and Firestore.
+2. Put your Stripe test keys in `lib/backend/keys.dart`. The file ships with empty values.
+3. Add a Google Maps API key for Android and iOS.
+
+## Status and limitations
+
+This is an incubator prototype, not a production app.
+
+- Stripe is called from the client for demonstration. A real deployment would move payment logic to a server.
+- There are no automated tests beyond the default Flutter widget test.
+- It has not been released on the App Store or Play Store.
