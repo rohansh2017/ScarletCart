@@ -8,7 +8,6 @@ const Color _odThemeBackgroundColor = Color(0xFFEBFDF2);
 const Color _odPrimaryTextColor = Color(0xFF004D40);
 const Color _odSecondaryTextColor = Colors.black87;
 const Color _odHeadingTextColor = Color(0xFF00695C);
-const Color _odAppBarLineColor = Color(0xFFB2DFDB); // Keep this if needed elsewhere
 
 
 const Color _odProceedButtonColor = Color(0xFF6CC48E);

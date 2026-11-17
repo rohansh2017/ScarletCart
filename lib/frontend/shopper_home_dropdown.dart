@@ -12,7 +12,7 @@ class DropdownButtonExample extends StatefulWidget {
 class _DropdownButtonExampleState extends State<DropdownButtonExample> {
   List<String> options = <String>[
     'Busch Student Center',
-    'Pal Building Cook Campus',
+    'Pal Building, Cook Campus',
     '57 Lipman Drive, Douglass Campus',
     'Tillett Hall, Livingston Campus',
     'The Yard, College Avenue Campus'

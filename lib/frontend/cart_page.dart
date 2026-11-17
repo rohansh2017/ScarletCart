@@ -113,7 +113,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     );
-    print ("response from API = " +responseFromStripeAPI.body);
+    print ("response from API = ${responseFromStripeAPI.body}");
     
     return jsonDecode(responseFromStripeAPI.body);  
     }
@@ -476,7 +476,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     );
-    print ("response from API = " +responseFromStripeAPI.body);
+    print ("response from API = ${responseFromStripeAPI.body}");
     
     return jsonDecode(responseFromStripeAPI.body);  
     }

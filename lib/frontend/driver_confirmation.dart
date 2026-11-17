@@ -60,7 +60,7 @@ class _OrderTrackingState extends State<OrderTracking> {
   final String orderNumber = "4884847";
   final String customer = "John Student";
   final String address = "4321 BPO Way\nPiscataway NJ 08854";
-  final double delivery_fee = 5.00;
+  final double deliveryFee = 5.00;
   final double tip = 3.00;
   int cartItemCount = 3;
 
@@ -92,10 +92,6 @@ class _OrderTrackingState extends State<OrderTracking> {
             // Navigator.canPop(context) should now be true
             if (Navigator.canPop(context)) {
               Navigator.pop(context);
-            } else {
-              // Optional: Handle case where it *still* can't pop
-              // (e.g., if this was the very first screen of the app)
-              print("Cannot pop further back!");
             }
           },
         ),
@@ -248,11 +244,8 @@ class _OrderTrackingState extends State<OrderTracking> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {
-                                print("Delivered button tapped!");
-                                setState(() {
-                                  _isDelivered = true;
-                                }); // Mark as delivered locally
+                              onTap: () async {
+                            
 
                                 Navigator.push(
                                   // Navigate to confirmation
@@ -263,7 +256,7 @@ class _OrderTrackingState extends State<OrderTracking> {
                                       orderNumber: orderNumber,
                                       customer: customer,
                                       address: address,
-                                      deliveryFee: delivery_fee,
+                                      deliveryFee: deliveryFee,
                                       tip: tip,
                                       date: date,
                                       time: time,
@@ -360,7 +353,7 @@ class DeliveryConfirmationScreen extends StatelessWidget {
   final String time;
 
   const DeliveryConfirmationScreen({
-    Key? key,
+    super.key,
     required this.orderNumber,
     required this.customer,
     required this.address,
@@ -368,7 +361,7 @@ class DeliveryConfirmationScreen extends StatelessWidget {
     required this.tip,
     required this.date,
     required this.time,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +425,7 @@ class DeliveryConfirmationScreen extends StatelessWidget {
                     print('Home icon tapped!');
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context)=> NearbyReqScreen())
+                      MaterialPageRoute(builder: (context)=> const NearbyReqScreen())
                     );
                     // Option 1: Pop until you reach the first route (often the home screen)
                     // MaterialPageRoute(

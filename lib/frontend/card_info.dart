@@ -40,7 +40,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
   Widget build(BuildContext context) {
     // Access theme data if defined in your MaterialApp
     final theme = Theme.of(context);
-  
     final appBarTheme = theme.appBarTheme;
 
     return Scaffold(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Keep if needed by theme
 
 // --- Placeholder for Cart Screen Navigation ---
 class ShoppingCartScreen extends StatelessWidget {

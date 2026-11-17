@@ -21,7 +21,7 @@ class ShoppingCartScreen extends StatelessWidget {
 
 
 class TextScreen extends StatelessWidget {
-  const TextScreen({Key? key}) : super(key: key);
+  const TextScreen({super.key});
 
 
   @override
@@ -65,7 +65,7 @@ class TextScreen extends StatelessWidget {
 
 
 class DeliveryConfirmationScreen extends StatefulWidget {
-  const DeliveryConfirmationScreen({Key? key}) : super(key: key);
+  const DeliveryConfirmationScreen({super.key});
 
 
   @override
@@ -93,8 +93,8 @@ class _DeliveryConfirmationScreenState extends State<DeliveryConfirmationScreen>
   Widget build(BuildContext context) {
     // Keep scale factor calculation
     final screenSize = MediaQuery.of(context).size;
-    final double refWidth = 393;
-    final double refHeight = 852;
+    const double refWidth = 393;
+    const double refHeight = 852;
     final double widthScale = screenSize.width / refWidth;
     final double heightScale = screenSize.height / refHeight;
     final double scaleFactor = (widthScale < heightScale ? widthScale : heightScale);
@@ -240,7 +240,7 @@ class _DeliveryConfirmationScreenState extends State<DeliveryConfirmationScreen>
               const SizedBox(height: 30),
               ElevatedButton(
                  onPressed: () {
-                   // TODO: Add navigation logic for Done button (e.g., pop or navigate home)
+                   
                    print("Done button pressed");
                    if (Navigator.canPop(context)) {
                       Navigator.pop(context); // Example action

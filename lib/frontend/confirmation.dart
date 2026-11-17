@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart'; // Not currently used
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Not currently used
 //  import 'textsdriver.dart';
 
 // --- Main App Setup (Unchanged) ---
@@ -49,7 +50,8 @@ class OrderTracking extends StatelessWidget {
     String address = "4321 BPO Way\nPiscataway NJ 08854"; // Use example address
     double deliveryfee = 5.00; // Example fee
     double tip = 3.00; // Example tip
-    String date = DateTime.now().toLocal().toString().split(' ')[0]; // Get current date
+    String date =
+        DateTime.now().toLocal().toString().split(' ')[0]; // Get current date
     String time = TimeOfDay.now().format(context); // Get current time
     // --- End of data section ---
 
@@ -68,48 +70,51 @@ class OrderTracking extends StatelessWidget {
         ),
         centerTitle: false, // As per your original code
         actions: [
-           // --- Your Shopping Cart Action Button ---
-           // This part remains exactly as you provided it
-           GestureDetector(
-             onTap: () {
-               Navigator.push(
-               context,
-               MaterialPageRoute(builder: (context) => const TextDriver()), // Make sure ShoppingCartScreen exists
-               );
-               print("Shopping cart tapped!"); // Placeholder if screen doesn't exist yet
-             },
-             child: Stack(
-               alignment: Alignment.center,
-               children: [
-                 const Icon(Icons.shopping_cart_outlined, color: Colors.black),
-                 Positioned(
-                   top: 0,
-                   right: 0,
-                   child: Container(
-                     padding: EdgeInsets.all(2.0 * scaleFactor),
-                     decoration: BoxDecoration(
-                       color: Colors.green,
-                       borderRadius: BorderRadius.circular(8.0 * scaleFactor),
-                     ),
-                     constraints: BoxConstraints(
-                       minWidth: 16.0 * scaleFactor,
-                       minHeight: 16.0 * scaleFactor,
-                     ),
-                     child: Text(
-                       '3', // Example cart count
-                       style: TextStyle(
-                         color: Colors.white,
-                         fontSize: 10.0 * scaleFactor,
-                       ),
-                       textAlign: TextAlign.center,
-                     ),
-                   ),
-                 ),
-               ],
-             ),
-           ),
-           SizedBox(width: 16 * scaleFactor), // As per your original code
-         ],
+          // --- Your Shopping Cart Action Button ---
+          // This part remains exactly as you provided it
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        const TextDriver()), // Make sure ShoppingCartScreen exists
+              );
+              print(
+                  "Shopping cart tapped!"); // Placeholder if screen doesn't exist yet
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                const Icon(Icons.shopping_cart_outlined, color: Colors.black),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(2.0 * scaleFactor),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(8.0 * scaleFactor),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 16.0 * scaleFactor,
+                      minHeight: 16.0 * scaleFactor,
+                    ),
+                    child: Text(
+                      '3', // Example cart count
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10.0 * scaleFactor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16 * scaleFactor), // As per your original code
+        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0 * scaleFactor),
           child: Container(
@@ -132,7 +137,8 @@ class OrderTracking extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 30.5 * scaleFactor),
-                      Center( // Center the placeholder circle
+                      Center(
+                        // Center the placeholder circle
                         child: Container(
                           width: 125 * scaleFactor,
                           height: 125 * scaleFactor,
@@ -141,17 +147,21 @@ class OrderTracking extends StatelessWidget {
                             color: Color(0xFFD9D9D9),
                           ),
                           // You can add an icon or image here if needed
-                           child: Icon(Icons.local_shipping, size: 60 * scaleFactor, color: Colors.grey[700]),
+                          child: Icon(Icons.local_shipping,
+                              size: 60 * scaleFactor, color: Colors.grey[700]),
                         ),
                       ),
                       SizedBox(height: 30 * scaleFactor),
 
                       // Order Status Indicators (Using example state)
-                      _buildStatusIndicator(context, 'Ordered September 23', scaleFactor, true),
+                      _buildStatusIndicator(
+                          context, 'Ordered September 23', scaleFactor, true),
                       SizedBox(height: 20 * scaleFactor),
-                      _buildStatusIndicator(context, 'Obtained', scaleFactor, true), // Assuming obtained if delivering
+                      _buildStatusIndicator(context, 'Obtained', scaleFactor,
+                          true), // Assuming obtained if delivering
                       SizedBox(height: 20 * scaleFactor),
-                      _buildStatusIndicator(context, 'Delivered', scaleFactor, false), // This will be marked by the button action conceptually
+                      _buildStatusIndicator(context, 'Delivered', scaleFactor,
+                          false), // This will be marked by the button action conceptually
                       SizedBox(height: 70 * scaleFactor),
 
                       Text(
@@ -202,25 +212,54 @@ class OrderTracking extends StatelessWidget {
                             color: Colors.transparent,
                             child: InkWell(
                               // *** THIS IS THE MODIFIED onTap ***
-                              onTap: () {
-                                print("Delivered button tapped!");
+                              onTap: () async {
+                                try {
+                                  String orderId =
+                                      'orderID_123'; // Replace with your actual order ID variable
 
-                                // Navigate to the Delivery Confirmation Screen, passing data
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DeliveryConfirmationScreen(
-                                      // Pass the actual data here
-                                      orderNumber: orderNumber,
-                                      customer: customer,
-                                      address: address,
-                                      deliveryFee: deliveryfee,
-                                      tip: tip,
-                                      date: date,
-                                      time: time,
+                                  // Update the Firestore document
+                                  await FirebaseFirestore.instance
+                                      .collection('orders')
+                                      .doc(orderId)
+                                      .update({
+                                    'status': 'Delivered',
+                                    'deliveryCompletedTimestamp':
+                                        FieldValue.serverTimestamp(),
+                                    'driverComfirmed': true,
+                                  });
+
+                                  // Show success message
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('Order marked as delivered!')),
+                                  );
+
+                                  // Then navigate to the confirmation screen
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          DeliveryConfirmationScreen(
+                                        orderNumber: orderNumber,
+                                        customer: customer,
+                                        address: address,
+                                        deliveryFee: deliveryfee,
+                                        tip: tip,
+                                        date: date,
+                                        time: time,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                } catch (error) {
+                                  // Handle any errors
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            'Error updating order: $error')),
+                                  );
+                                  print('Error updating order: $error');
+                                }
                               },
                               // *** End of modification ***
                               borderRadius: BorderRadius.circular(8),
@@ -254,14 +293,16 @@ class OrderTracking extends StatelessWidget {
 
   // Updated status indicator to take 'isChecked' as a parameter
   // Adjusted to match the text in your example ('Ordered...', 'Obtained')
-  Widget _buildStatusIndicator(BuildContext context, String text, double scaleFactor, bool isChecked) {
+  Widget _buildStatusIndicator(
+      BuildContext context, String text, double scaleFactor, bool isChecked) {
     return Row(
       children: [
         Container(
           width: 30 * scaleFactor,
           height: 30 * scaleFactor,
           decoration: BoxDecoration(
-              color: isChecked ? const Color(0xFF6CC48E) : const Color(0xFFD9D9D9),
+              color:
+                  isChecked ? const Color(0xFF6CC48E) : const Color(0xFFD9D9D9),
               borderRadius: BorderRadius.circular(4)),
           child: isChecked
               ? Icon(Icons.check, color: Colors.white, size: 20 * scaleFactor)
@@ -281,7 +322,6 @@ class OrderTracking extends StatelessWidget {
     );
   }
 }
-
 
 // --- Delivery Confirmation Screen (Basic Version - as requested) ---
 // This screen now simply displays the passed data without extra gestures/styling
@@ -312,18 +352,22 @@ class DeliveryConfirmationScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Delivery Confirmed"),
-         // Provides a back button automatically
+        // Provides a back button automatically
       ),
-      backgroundColor: const Color.fromARGB(255, 242, 255, 247), // Original background
+      backgroundColor:
+          const Color.fromARGB(255, 242, 255, 247), // Original background
       body: SafeArea(
-        child: Center( // Center the content vertically and horizontally
+        child: Center(
+          // Center the content vertically and horizontally
           child: Padding(
             padding: const EdgeInsets.all(16.0), // Basic padding
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // Center vertically
-              crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+              crossAxisAlignment:
+                  CrossAxisAlignment.center, // Center horizontally
               children: [
-                const Text( // Original Title
+                const Text(
+                  // Original Title
                   'Delivery Confirmed',
                   style: TextStyle(
                     fontSize: 24,
@@ -339,15 +383,17 @@ class DeliveryConfirmationScreen extends StatelessWidget {
                 Text(address, textAlign: TextAlign.center),
                 const SizedBox(height: 8),
                 Text('Delivered: $date, $time'), // Use passed date/time
-                const SizedBox( height: 30),
+                const SizedBox(height: 30),
                 const Divider(), // Separator
-                 const SizedBox( height: 10),
-                Text('Delivery Fee: \$${deliveryFee.toStringAsFixed(2)}'), // Use passed fee
+                const SizedBox(height: 10),
+                Text(
+                    'Delivery Fee: \$${deliveryFee.toStringAsFixed(2)}'), // Use passed fee
                 const SizedBox(height: 8),
-                Text('Tip Received: \$${tip.toStringAsFixed(2)}'), // Use passed tip
-                const SizedBox( height: 10),
-                 const Divider(), // Separator
-                 const SizedBox( height: 10),
+                Text(
+                    'Tip Received: \$${tip.toStringAsFixed(2)}'), // Use passed tip
+                const SizedBox(height: 10),
+                const Divider(), // Separator
+                const SizedBox(height: 10),
                 Text(
                   'Total Earned: \$${total.toStringAsFixed(2)}', // Display calculated total
                   style: const TextStyle(
