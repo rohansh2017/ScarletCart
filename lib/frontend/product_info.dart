@@ -317,7 +317,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                     SizedBox(height: 8 * scaleFactor),
                     Text(
-                      // TODO: Make this dynamic
                       'Lemons are known for their high vitamin C content. Grown organically without pesticides. Perfect for drinks, cooking, and baking.',
                       style: TextStyle(
                         fontSize: 16 * scaleFactor,

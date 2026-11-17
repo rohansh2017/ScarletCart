@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 // Removed map imports
 
 // Assuming these imports point to valid files in your project structure
-import 'package:scarletcart/frontend/order_details_test.dart'; // Make sure this exists if used
 import 'package:scarletcart/frontend/shopping_list.dart'; // Used in navigation
 import 'package:scarletcart/frontend/profile.dart';
 
@@ -135,7 +134,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
              tooltip: 'Profile', // Accessibility tooltip
              onPressed: () {
                // Action to perform when profile icon is tapped
-               print('Profile icon tapped!');
                // Example: Navigate to a Profile Screen
                // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()));
                
@@ -238,7 +236,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     // Generate list items using map and spread operator (...)
                     ...sampleRequests.map((request) => GestureDetector(
                           onTap: () {
-                            print("Tapped on Nearby Request: ${request.id}");
                             // Navigate to the Shopping List screen when a request is tapped
                             Navigator.push(
                               context,
@@ -253,7 +250,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           // Use the reusable widget for each row
                           child: _RequestRowWidget(request: request),
                         ) // End GestureDetector
-                    ).toList(), // Convert the Iterable from map to a List<Widget>
+                    ), // Convert the Iterable from map to a List<Widget>
                     // --- End Nearby Requests List ---
 
                     // Bottom padding is handled by ListView's padding property above

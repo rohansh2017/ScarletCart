@@ -40,12 +40,12 @@ class _AddCardScreenState extends State<AddCardScreen> {
   Widget build(BuildContext context) {
     // Access theme data if defined in your MaterialApp
     final theme = Theme.of(context);
-    final inputTheme = theme.inputDecorationTheme;
+  
     final appBarTheme = theme.appBarTheme;
 
     return Scaffold(
       // Use theme background or fallback
-      backgroundColor: theme.scaffoldBackgroundColor ?? lightGreenBackground,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         // Use theme settings or fallbacks
         backgroundColor: appBarTheme.backgroundColor ?? lightGreenBackground,
@@ -165,7 +165,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
     List<TextInputFormatter>? inputFormatters,
   }) {
     // Use theme for label style or fallback
-    final textTheme = Theme.of(context).textTheme;
     final effectiveLabelStyle =
         Theme.of(context).inputDecorationTheme.labelStyle ??
             TextStyle(
@@ -248,15 +247,15 @@ class _AddCardScreenState extends State<AddCardScreen> {
             // Use theme button style or fallback
             style: buttonTheme?.copyWith(
                   // Start with theme style
-                  backgroundColor: MaterialStateProperty.all(primaryGreen),
-                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                  padding: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(primaryGreen),
+                  foregroundColor: WidgetStateProperty.all(Colors.white),
+                  padding: WidgetStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 16)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   )),
-                  elevation: MaterialStateProperty.all(2),
-                  textStyle: MaterialStateProperty.all(const TextStyle(
+                  elevation: WidgetStateProperty.all(2),
+                  textStyle: WidgetStateProperty.all(const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     // fontFamily: 'YourAppFont', // Should be inherited from theme
@@ -357,7 +356,7 @@ class ExpiryDateInputFormatter extends TextInputFormatter {
     if (text.length == 2 && !text.contains('/')) {
       text += '/';
     } else if (text.length == 3 && !text.endsWith('/')) {
-      text = text.substring(0, 2) + '/' + text.substring(2);
+      text = '${text.substring(0, 2)}/${text.substring(2)}';
     }
     if (text.length > 5) {
       text = text.substring(0, 5);

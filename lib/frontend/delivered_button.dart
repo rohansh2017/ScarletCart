@@ -8,7 +8,7 @@ const Color _dpThemeBackgroundColor = Color(0xFFF0FFF4);
 const Color _dpPrimaryTextColor = Color(0xFF004D40);
 const Color _dpButtonColor = Color(0xFF6CC48E);
 const Color _dpButtonTextColor = Colors.white;
-const Color _dpAppBarLineColor = Color(0xFFB2DFDB); // Keep if needed elsewhere
+
 // --- End color constants ---
 
 // --- Placeholder for Cart Screen Navigation ---
@@ -78,7 +78,6 @@ class DeliverProgressScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // --- ADDED: Placeholder Cart Item Count ---
     // Needed for the AppBar badge logic.
-    const int cartItemCount = 1; // Example value
     // --- END ADDED ---
 
     return Scaffold(

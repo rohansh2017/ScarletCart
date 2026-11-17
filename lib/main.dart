@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
-import 'package:scarletcart/frontend/newlog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:scarletcart/backend/firebase_options.dart';
+import 'package:scarletcart/frontend/login_error.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromRGBO(235, 253, 242, 1.0)),
       ),
-      home: const NLPage(),
+      home: const NLPageError(),
     );
   }
 }

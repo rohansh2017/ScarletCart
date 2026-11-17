@@ -1,0 +1,288 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:scarletcart/frontend/homepage.dart'; // Assuming this path is correct
+
+class NLPageError extends StatefulWidget {
+  const NLPageError({super.key});
+
+  @override
+  State<NLPageError> createState() => _NLPage_error_State();
+}
+
+class _NLPage_error_State extends State<NLPageError> {
+  bool _isSigningIn = false; // State to manage loading indicator visibility
+
+  Future<User?> signInWithGoogle() async {
+    setState(() {
+      _isSigningIn = true; // Show loading indicator
+    });
+
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        setState(() => _isSigningIn = false); // Hide indicator if cancelled
+        return null; // User cancelled sign-in
+      }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      // No need to hide indicator here, navigation will remove the screen
+      return userCredential.user;
+    } catch (e) {
+      setState(() => _isSigningIn = false); // Hide indicator on error
+      // Show an error message only if the widget is still mounted
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Sign-in failed. Please try again.'),
+              backgroundColor: Colors.redAccent),
+        );
+      }
+      print("Error during Google Sign-In: $e");
+      return null;
+    }
+    // No need for finally block to hide indicator if navigation happens on success
+  }
+  @override
+  Widget build(BuildContext context) {
+    // Get screen dimensions
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final Orientation orientation = MediaQuery.of(context).orientation;
+
+    // --- Responsive Calculations (adjust factors as needed) ---
+
+    // Font sizes - base on width, clamp for sanity
+    final double titleFontSize =
+        (screenWidth * 0.09).clamp(28.0, 50.0); // Min 28, Max 50
+    final double subtitleFontSize =
+        (screenWidth * 0.04).clamp(14.0, 20.0); // Min 14, Max 20
+    final double buttonFontSize =
+        (screenWidth * 0.04).clamp(15.0, 20.0); // Min 15, Max 20
+    final double errorFontSize = // Responsive font size for error message
+        (screenWidth * 0.045).clamp(16.0, 24.0); // Min 16, Max 24
+
+    // Spacing - base on height
+    final double space1 =
+        screenHeight * 0.015; // Space between title and subtitle
+    final double space2 =
+        screenHeight * 0.06; // Space between subtitle and button
+    final double space3 = screenHeight *
+        0.08; // Space below button (adjust based on orientation if needed)
+     final double spaceBeforeTitle = screenHeight * 0.05; // Space between error message and title
+    // Padding - base on width for horizontal, height for vertical in button
+    final double horizontalPadding = screenWidth * 0.06; // 6% of width
+    final double buttonVerticalPadding =
+        (screenHeight * 0.018).clamp(10.0, 18.0); // dynamic vertical padding
+    final double errorContainerVerticalPadding = screenHeight * 0.02; // Padding inside error container
+    final double errorContainerHorizontalPadding = screenWidth * 0.04; // Padding inside error container
+    // Button size & elements
+    final double buttonHeight =
+        (screenHeight * 0.07).clamp(48.0, 65.0); // Min 48, Max 65
+    final double buttonIconSize = (buttonHeight * 0.5)
+        .clamp(20.0, 30.0); // Icon proportional to button height
+    final double buttonBorderRadius =
+        (buttonHeight * 0.25).clamp(8.0, 16.0); // Radius proportional
+
+    // Error Container size (adjust as needed, could be made more dynamic)
+    final double errorContainerHeight = (screenHeight * 0.15).clamp(100.0, 250.0); // Responsive height
+    // Let width be constrained by the outer padding
+
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          // 1. Background Image
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'assets/rumad-home.png'), // Replace with your image path
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+
+          // 2. Dark Semi-Transparent Overlay
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.black.withOpacity(
+                      0.65), // Slightly darker for better contrast potentially
+                  Colors.black.withOpacity(0.35),
+                  Colors.black.withOpacity(0.65),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: const [
+                  0.0,
+                  0.4,
+                  1.0
+                ], // Adjust stops for smoother gradient
+              ),
+            ),
+          ),
+          // 3. Content Area
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // --- Rutgers Email Error Message ---
+                //   Container(
+                //     // width: 500, // Remove fixed width for responsiveness
+                //     // height: 250, // Remove fixed height for responsiveness
+                //     padding: EdgeInsets.symmetric( // Add padding for content
+                //       vertical: errorContainerVerticalPadding,
+                //       horizontal: errorContainerHorizontalPadding,
+                //     ),
+                //     constraints: BoxConstraints( // Add max width if needed
+                //       maxWidth: 500,
+                //       minHeight: errorContainerHeight, // Ensure a minimum height
+                //     ),
+                //     decoration: BoxDecoration( // Use decoration for color and rounded corners
+                //       color: Colors.white70,
+                //       borderRadius: BorderRadius.circular(12), // Optional: rounded corners
+                //     ),
+                //     alignment: Alignment.center, // Center the child (Text)
+                //     child: Text( // Use const if text is static
+                //       "Please Login in with your Rutgers Email Address",
+                //       textAlign: TextAlign.center, // <<< HERE: Center the text itself
+                //       style: TextStyle(
+                //         color: Colors.redAccent[700], // Slightly darker red
+                //         fontSize: errorFontSize, // Responsive font size
+                //         fontWeight: FontWeight.bold,
+                //         height: 1.3, // Adjust line height if needed
+                //       ),
+                //     ),
+                //   ),
+                  // --- End Error Message ---
+
+                  SizedBox(height: spaceBeforeTitle), // Space between error and title
+
+                  // App Title
+                  Text(
+                    'Scarlet Cart',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: titleFontSize, // Responsive
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
+                  ),
+
+                  SizedBox(height: space1), // Responsive
+
+                  // Subtitle
+                  Text(
+                    'From Snacks to Supplies, Got You Covered.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: subtitleFontSize, // Responsive
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+
+                  SizedBox(height: space2), // Responsive
+
+                  // Sign in Button - Using ElevatedButton.icon
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black87,
+                      backgroundColor: Colors.white
+                          .withOpacity(0.95), // Slightly more opaque
+                      minimumSize: Size(
+                          double.infinity, buttonHeight), // Responsive height
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            buttonBorderRadius), // Responsive radius
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical:
+                              buttonVerticalPadding), // Responsive padding
+                      elevation: 4, // Add subtle shadow
+                    ),
+                    onPressed: _isSigningIn
+                        ? null
+                        : () async {
+                            // Disable button while signing in
+                            User? user = await signInWithGoogle();
+                            if (user != null && mounted) {
+                              // TODO: Add logic here to check if email is a Rutgers email
+                              // Example (replace with your actual validation):
+                              if ( (user.email != null && user.email!.endsWith('@rutgers.edu')) ||(user.email != null && user.email!.endsWith('@scarletmail.rutgers.edu'))) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const HomePage()),
+                                );
+                              } else {
+                                // Sign out if not Rutgers email and show error (or navigate back here)
+                                await FirebaseAuth.instance.signOut();
+                                await GoogleSignIn().signOut(); // Important to sign out Google too
+                                setState(() => _isSigningIn = false); // Hide loading
+                                if (mounted) {
+                                   // Keep user on this error page or show another specific error
+                                   // The current structure keeps them here implicitly.
+                                   // You might want a more explicit Snackbar error too:
+                                   ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Please use a Rutgers email address (@rutgers.edu).'),
+                                          backgroundColor: Colors.orangeAccent),
+                                    );
+                                }
+                              }
+                            } else if (user == null && mounted) {
+                                // Handle case where sign-in was cancelled or failed earlier
+                                // signInWithGoogle already handles showing a general failure snackbar
+                                // No specific action needed here unless you want a different message
+                                // for cancellation vs. failure.
+                            }
+                            // If navigation happens, no need to set _isSigningIn = false
+                          },
+                    icon: Image.asset(
+                      'assets/google-logo.png', // Replace with your Google logo path
+                      height: buttonIconSize, // Responsive
+                      width: buttonIconSize, // Responsive
+                    ),
+                    label: Text(
+                      'Sign in with Google',
+                      style: TextStyle(
+                        fontSize: buttonFontSize, // Responsive
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                  // Show loading indicator conditionally
+                  if (_isSigningIn)
+                    const Padding(
+                      padding:
+                          EdgeInsets.only(top: 20.0), // Space above indicator
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
+
+                  SizedBox(
+                      height: _isSigningIn
+                          ? space3 - 20
+                          : space3), // Adjust bottom space when indicator shows
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
